@@ -1,0 +1,151 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Wooza - Plataformas e Planos (AngularJS & Bootstrap) - F&aacute;bio Kropotoff Salviano</title>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+    <script src="js/app.js"></script>    
+    <script src="js/service/plataformService.js"></script>
+    <script src="js/controller/plataformController.js"></script>
+</head>
+<body>
+    <div class="container" style="padding-top:20px;">
+        <div ng-app="plataformApp" data-ng-controller="plataformController" class="container">
+            <div ng-show="error" class="alert alert-danger alert-dismissible" role="alert">
+                <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">×</span><span class="sr-only">Fechar</span></button>
+                <p></p>
+            </div>
+
+            <h1>Plataformas</h1>
+            <table class="table table-hover">
+                <tr>
+                    <th>SKU</th>
+                    <td><b>Nome</b></td>
+                    <th>Descri&ccedil;&atilde;o</th>                    
+                    <th></th>
+                </tr>
+                <tr ng-repeat="plataforma in plataformas">
+                    <td><strong>{{plataforma.sku}}</strong></td>
+                    <td><p>{{plataforma.nome}}</p></td>
+                    <td><p>{{plataforma.descricao}}</p></td>
+                    <td>
+                        <p><a data-ng-click="get(plataforma)" href="javascript:;">Ver Planos...</a></p>
+                    </td>
+                </tr>
+            </table>
+            <hr />
+
+            <div class="modal fade" id="viewModal" tabindex="-1" role="dialog" aria-hidden="true">
+                <div class="modal-dialog" style="max-width:1024px">
+                    <div class="modal-content">
+                        <div class="modal-header">                            
+                            <h4 class="modal-title" id="myModalLabel">Selecionar Plano</h4>
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">X</button>
+                        </div>
+                        <div class="modal-body">
+                            <form class="form-horizontal" role="form" name="viewuser">
+                                <div class="form-group">
+                                    <label for="nome" class="control-label"><strong>Plataforma:&nbsp;</strong></label>
+                                    <label for="nome" class="control-label" ng-bind="plataforma.nome"></label>&nbsp;-&nbsp;
+                                    <label for="descricao" class="control-label" ng-bind="plataforma.descricao"></label>
+                                </div>                                
+                            </form>
+
+                            <table class="table table-hover">
+                                <tr>
+                                    <th>Franquia</th>
+                                    <th>Valor</th>
+                                    <th>Aparelho</th>
+                                    <th>Valor</th>
+                                    <th>Parcelas</th>
+                                    <th>Valor das Parcelas</th>
+                                    <th></th>
+                                </tr>
+                                <tr ng-repeat="plano in plataforma.planos">
+                                    <td><strong>{{plano.franquia}}</strong></td>
+                                    <td><p>{{plano.valor}}</p></td>
+                                    <td><p>{{plano.aparelho.nome ? plano.aparelho.nome : '-'}}</p></td>
+                                    <td><p>{{plano.aparelho.valor ? plano.aparelho.valor : '-'}}</p></td>
+                                    <td><p>{{plano.aparelho.numeroParcelas ? plano.aparelho.numeroParcelas : '-'}}</p></td>
+                                    <td><p>{{plano.aparelho.valorParcela ? plano.aparelho.valorParcela : '-'}}</p></td>
+                                    <td>
+                                        <p><a data-ng-click="getPlain(plano)" href="javascript:;">Selecionar...</a></p>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Voltar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>     
+            
+            <div class="modal fade" id="addModel" tabindex="-1" role="dialog" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title" id="myModalLabel">Confirmar</h4>
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">X</button>                            
+                        </div>
+                        <div class="modal-body">
+                            <form class="form-horizontal" role="form" name="adduserform">
+                                <label for="plataforma" class="control-label"><strong>Plataforma:&nbsp;</strong></label>
+                                <label for="nome" class="control-label" ng-bind="plataforma.nome"></label>&nbsp;-&nbsp;
+                                <label for="descricao" class="control-label" ng-bind="plataforma.descricao"></label><br />
+                                <label for="franquia" class="control-label"><strong>Franquia:&nbsp;</strong></label>
+                                <label for="franquia" class="control-label" ng-bind="plano.franquia"></label>&nbsp;-&nbsp;
+                                <label for="valor" class="control-label"><strong>Valor:&nbsp;</strong></label>
+                                <label for="valor" class="control-label" ng-bind="plano.valor"></label>
+                                <p ng-if="plano.aparelho">
+                                    <label for="aparelho" class="control-label"><strong>Aparelho:&nbsp;</strong></label>
+                                    <label for="nome" class="control-label" ng-bind="plano.aparelho.nome"></label>&nbsp;-&nbsp;
+                                    <label for="valor" class="control-label"><strong>Valor:&nbsp;</strong></label>
+                                    <label for="valor" class="control-label" ng-bind="plano.aparelho.valor"></label>&nbsp;-&nbsp;
+                                    <label for="parcelas" class="control-label"><strong>Parcelas:&nbsp;</strong></label>
+                                    <label for="numeroParcelas" class="control-label" ng-bind="plano.aparelho.numeroParcelas"></label>
+                                    <div ng-if="plano.aparelho.valorParcela">
+                                        <label for="valorParcela" class="control-label"><strong>Valor das Parcelas:&nbsp;</strong></label>
+                                        <label for="valorParcela" class="control-label" ng-bind="plano.aparelho.valorParcela"></label>
+                                    </div>
+                                </p>
+                                <hr />
+                                <div class="form-group">
+                                    <div class="col-sm-10">
+                                        <label for="title" class="control-label">Nome</label>
+                                        <input type="text" data-ng-model="cliente.Nome" class="form-control" id="title" placeholder="Seu Nome" required title="Informe seu Nome" />
+                                    </div>
+                                </div>                                                                                                    
+                                <div class="form-group">
+                                    <label for="title" class="col-sm-2 control-label">Email</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" data-ng-model="cliente.Email" class="form-control" id="title" placeholder="Seu Email" required title="Informe seu endereço de email" />
+                                    </div>
+                                </div>                                                                        
+                                <div class="form-group">
+                                    <label for="title" class="col-sm-2 control-label">Telefone</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" data-ng-model="cliente.Telefone" class="form-control" id="title" placeholder="Seu Telefone" required title="Informe o seu número de telefone para contato" />
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-sm-offset-2 col-sm-10">
+                                        <span>
+                                            <input type="submit" value="OK" ng-disabled="adduserform.$invalid" data-ng-click="add()" class="btn btn-primary" />
+                                        </span>
+                                        <input type="button" value="Cancelar" data-ng-click="cancel()" class="btn btn-primary" />
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
